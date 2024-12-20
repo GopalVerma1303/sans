@@ -1,12 +1,14 @@
-/** @type {import('next').NextConfig} */
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
+  output: "export", // Enable static exports
   images: {
-    unoptimized: true,
+    unoptimized: true, // Required for static export
   },
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
+  // Required for proper static file serving
+  trailingSlash: true,
+  // Ensure pages are generated with correct paths
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
 };
 
 export default nextConfig;
