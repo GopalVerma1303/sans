@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/hooks/use-notes";
 import { NoteEditor } from "@/components/note-editor";
 import { NotesList } from "@/components/notes-list";
 import { GitHubSync } from "@/components/github-sync";
-import { Plus, Github } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function NotesApp() {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
