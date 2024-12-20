@@ -102,13 +102,13 @@ export function FolderTree({
             {creatingIn === folder.id && (
               <div className="flex items-center gap-2 p-1">
                 <Input
-                  size="sm"
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleCreateFolder(folder.id);
                   }}
                   placeholder="Folder name..."
+                  className="h-8" // Adding a smaller height class instead of using size prop
                 />
                 <Button size="sm" onClick={() => handleCreateFolder(folder.id)}>
                   Create
@@ -162,13 +162,13 @@ export function FolderTree({
       {creatingIn === "root" && (
         <div className="flex items-center gap-2 mb-2">
           <Input
-            size="sm"
             value={newFolderName}
             onChange={(e) => setNewFolderName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleCreateFolder(null);
             }}
             placeholder="Folder name..."
+            className="h-8" // Adding a smaller height class instead of using size prop
           />
           <Button size="sm" onClick={() => handleCreateFolder(null)}>
             Create
