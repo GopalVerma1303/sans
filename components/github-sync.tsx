@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Github, Save } from "lucide-react";
+import { Github } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,24 +13,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface GitHubSyncProps {
-  onSync: (token: string, repo: string) => Promise<void>;
+  onSaveCredentials: (token: string, repo: string) => void;
+  hasCredentials: boolean;
 }
 
-export function GitHubSync({ onSync }: GitHubSyncProps) {
+export function GitHubSync({
+  onSaveCredentials,
+  hasCredentials,
+}: GitHubSyncProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [token, setToken] = useState("");
   const [repo, setRepo] = useState("");
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSync = async () => {
+  const handleSave = async () => {
     try {
-      setIsSyncing(true);
-      await onSync(token, repo);
+      setIsSaving(true);
+      await onSaveCredentials(token, repo);
       setIsOpen(false);
     } catch (error) {
-      console.error("Sync failed:", error);
+      console.error("Failed to save credentials:", error);
     } finally {
-      setIsSyncing(false);
+      setIsSaving(false);
     }
   };
 
@@ -39,15 +43,15 @@ export function GitHubSync({ onSync }: GitHubSyncProps) {
       <DialogTrigger asChild>
         <Button variant="outline">
           <Github className="h-4 w-4 mr-2" />
-          Sync with GitHub
+          {hasCredentials ? "Connected to GitHub" : "Connect GitHub"}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Sync with GitHub</DialogTitle>
+          <DialogTitle>Connect to GitHub</DialogTitle>
           <DialogDescription>
             Enter your GitHub personal access token and repository details to
-            sync your notes.
+            sync your notes. The repository will be used as your notes database.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -72,12 +76,11 @@ export function GitHubSync({ onSync }: GitHubSyncProps) {
           </div>
         </div>
         <Button
-          onClick={handleSync}
-          disabled={!token || !repo || isSyncing}
+          onClick={handleSave}
+          disabled={!token || !repo || isSaving}
           className="w-full"
         >
-          <Save className="h-4 w-4 mr-2" />
-          {isSyncing ? "Syncing..." : "Save to GitHub"}
+          {isSaving ? "Connecting..." : "Connect Repository"}
         </Button>
       </DialogContent>
     </Dialog>
