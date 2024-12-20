@@ -4,13 +4,21 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/hooks/use-notes";
 import { NoteEditor } from "@/components/note-editor";
-import { NotesList } from "@/components/notes-list";
+import { FolderTree } from "@/components/folder-tree";
 import { GitHubSync } from "@/components/github-sync";
-import { Plus } from "lucide-react";
 
 export default function NotesApp() {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  const { notes, addNote, updateNote, deleteNote, syncWithGitHub } = useNotes();
+  const {
+    notes,
+    folders,
+    addFolder,
+    deleteFolder,
+    addNote,
+    updateNote,
+    deleteNote,
+    syncWithGitHub,
+  } = useNotes();
   const [isPreview, setIsPreview] = useState(false);
 
   const selectedNote = selectedNoteId
@@ -30,31 +38,18 @@ export default function NotesApp() {
 
       <main className="container py-4">
         <div className="grid grid-cols-[300px_1fr] gap-4">
-          <div className="border rounded-lg p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold">Notes</h2>
-              <Button
-                size="sm"
-                onClick={() => {
-                  const newNote = {
-                    id: Date.now().toString(),
-                    title: "Untitled Note",
-                    content: "",
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                  };
-                  addNote(newNote);
-                  setSelectedNoteId(newNote.id);
-                }}
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                New Note
-              </Button>
-            </div>
-            <NotesList
+          <div className="border rounded-lg">
+            <FolderTree
+              folders={folders}
               notes={notes}
               selectedNoteId={selectedNoteId}
               onNoteSelect={setSelectedNoteId}
+              onFolderCreate={addFolder}
+              onFolderDelete={deleteFolder}
+              onNoteCreate={(folderId) => {
+                const newNote = addNote(folderId);
+                setSelectedNoteId(newNote.id);
+              }}
               onNoteDelete={deleteNote}
             />
           </div>
@@ -77,12 +72,12 @@ export default function NotesApp() {
                 <NoteEditor
                   note={selectedNote}
                   isPreview={isPreview}
-                  onChange={(updatedNote) => updateNote(updatedNote)}
+                  onChange={updateNote}
                 />
               </>
             ) : (
               <div className="flex items-center justify-center h-[500px] text-muted-foreground">
-                Select a note or create a new one
+                Select a note or create a new one in a folder
               </div>
             )}
           </div>
