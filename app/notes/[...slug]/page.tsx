@@ -1,27 +1,26 @@
 import { getNoteContent, getAllNotePaths } from "@/utils/markdown";
 import { NoteViewer } from "@/components/note-viewer";
 
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-
+// Define props interface extending NextJS PageProps
 interface NotePageProps {
-  params: Params & {
+  params: {
     slug: string[];
   };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-// Updated to handle trailing slash in paths
+// Generate static paths for all notes
 export async function generateStaticParams() {
   const paths = getAllNotePaths();
   return paths.map((path) => ({
-    // Remove .md extension and split into segments
-    slug: path.replace(".md", "").split("/"),
+    slug: path.replace(/\.md$/, "").split("/"),
   }));
 }
 
-export default function NotePage({ params }: NotePageProps) {
-  // Join the slug segments and add .md extension
+// Page component
+export default async function NotePage({ params }: NotePageProps) {
   const notePath = `${params.slug.join("/")}.md`;
   const note = getNoteContent(notePath);
+
   return <NoteViewer note={note} />;
 }
