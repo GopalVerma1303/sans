@@ -10,3 +10,10 @@ export interface Folder {
   path: string;
   children: (Folder | Note)[];
 }
+
+export interface PendingChange {
+  type: "CREATE" | "UPDATE" | "DELETE";
+  itemType: "FILE" | "FOLDER";
+  path: string;
+  content?: string;
+}

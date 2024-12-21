@@ -1,5 +1,7 @@
 import { FolderTree } from "@/components/folder-tree";
+import { SyncButton } from "@/components/sync-button";
 import { getContentTree } from "@/utils/markdown";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function NotesLayout({
   children,
@@ -13,6 +15,7 @@ export default function NotesLayout({
       <header className="border-b">
         <div className="container flex items-center justify-between h-16">
           <h1 className="text-xl font-bold">Markdown Notes</h1>
+          <SyncButton />
         </div>
       </header>
 
@@ -24,6 +27,7 @@ export default function NotesLayout({
           <div className="border rounded-lg p-4">{children}</div>
         </div>
       </main>
+      <Toaster />
     </div>
   );
 }
