@@ -10,7 +10,6 @@ import {
   FileText,
   Plus,
   Trash2,
-  Edit2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,23 +25,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useChanges } from "@/hooks/use-changes";
+import { useNotes } from "@/context/notes-context";
 import type { Folder, Note } from "@/types";
 
 interface FolderTreeProps {
   folder: Folder;
 }
 
-export function FolderTree({ folder }: FolderTreeProps) {
+export function FolderTree() {
+  const { virtualTree, addNote, addFolder, deleteItem } = useNotes();
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    new Set([folder.path]),
+    new Set([virtualTree.path]),
   );
   const [isCreating, setIsCreating] = useState(false);
   const [createType, setCreateType] = useState<"file" | "folder">("file");
   const [createPath, setCreatePath] = useState("");
   const [newItemName, setNewItemName] = useState("");
   const pathname = usePathname();
-  const { addChange } = useChanges();
 
   const toggleFolder = (path: string) => {
     const newExpanded = new Set(expandedFolders);
@@ -58,31 +57,22 @@ export function FolderTree({ folder }: FolderTreeProps) {
     if (!newItemName) return;
 
     const path = createPath ? `${createPath}/${newItemName}` : newItemName;
-    const content =
-      createType === "file" ? `---\ntitle: ${newItemName}\n---\n\n` : "";
 
-    addChange({
-      type: "CREATE",
-      itemType: createType === "file" ? "FILE" : "FOLDER",
-      path: createType === "file" ? `${path}.md` : path,
-      content,
-    });
+    if (createType === "file") {
+      addNote(createPath, newItemName);
+    } else {
+      addFolder(path);
+    }
 
     setIsCreating(false);
     setNewItemName("");
-    window.location.reload(); // Reload to reflect changes
   };
 
   const handleDelete = (path: string, type: "FILE" | "FOLDER") => {
     if (
       confirm(`Are you sure you want to delete this ${type.toLowerCase()}?`)
     ) {
-      addChange({
-        type: "DELETE",
-        itemType: type,
-        path,
-      });
-      window.location.reload(); // Reload to reflect changes
+      deleteItem(path, type);
     }
   };
 
@@ -186,7 +176,7 @@ export function FolderTree({ folder }: FolderTreeProps) {
             New
           </Button>
         </div>
-        {folder.children.map(renderItem)}
+        {virtualTree.children.map(renderItem)}
       </div>
 
       <Dialog open={isCreating} onOpenChange={setIsCreating}>

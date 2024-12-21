@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useChanges } from "@/hooks/use-changes";
+import { useNotes } from "@/context/notes-context";
 import { useToast } from "@/hooks/use-toast";
 
 export function SyncButton() {
-  const { pendingChanges, syncChanges, isSyncing } = useChanges();
+  const { pendingChanges, syncChanges, isSyncing } = useNotes();
   const [isOpen, setIsOpen] = useState(false);
   const [token, setToken] = useState("");
   const [repo, setRepo] = useState("");

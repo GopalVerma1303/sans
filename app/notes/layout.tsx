@@ -1,15 +1,13 @@
 import { FolderTree } from "@/components/folder-tree";
 import { SyncButton } from "@/components/sync-button";
-import { getContentTree } from "@/utils/markdown";
-import { Toaster } from "@/components/ui/toaster";
+import { SearchNotes } from "@/components/search-notes";
+import { Separator } from "@/components/ui/separator";
 
 export default function NotesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const contentTree = getContentTree();
-
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
@@ -21,13 +19,18 @@ export default function NotesLayout({
 
       <main className="container py-4">
         <div className="grid grid-cols-[300px_1fr] gap-4">
-          <div className="border rounded-lg">
-            <FolderTree folder={contentTree} />
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4">
+              <SearchNotes />
+            </div>
+            <Separator />
+            <div className="border rounded-lg">
+              <FolderTree />
+            </div>
           </div>
           <div className="border rounded-lg p-4">{children}</div>
         </div>
       </main>
-      <Toaster />
     </div>
   );
 }

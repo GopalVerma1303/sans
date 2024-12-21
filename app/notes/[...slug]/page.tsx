@@ -1,26 +1,15 @@
-import { getNoteContent, getAllNotePaths } from "@/utils/markdown";
-import { NoteViewer } from "@/components/note-viewer";
+import { getContentTree, getAllNotePaths } from "@/utils/markdown";
+import { EnhancedNoteEditor } from "@/components/enhanced-note-editor";
 
-// Define props interface extending NextJS PageProps
-interface NotePageProps {
-  params: {
-    slug: string[];
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-// Generate static paths for all notes
-export async function generateStaticParams() {
+// This is required for static site generation
+export function generateStaticParams() {
   const paths = getAllNotePaths();
   return paths.map((path) => ({
-    slug: path.replace(/\.md$/, "").split("/"),
+    slug: path.replace(".md", "").split("/"),
   }));
 }
 
-// Page component
-export default async function NotePage({ params }: NotePageProps) {
-  const notePath = `${params.slug.join("/")}.md`;
-  const note = getNoteContent(notePath);
-
-  return <NoteViewer note={note} />;
+export default function NotePage({ params }: { params: { slug: string[] } }) {
+  const noteId = params.slug.join("/");
+  return <EnhancedNoteEditor noteId={noteId} />;
 }

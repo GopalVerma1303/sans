@@ -1,8 +1,12 @@
 export interface Note {
-  slug: string;
+  id: string;
   title: string;
   content: string;
   path: string;
+  isVirtual?: boolean;
+  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Folder {
@@ -16,4 +20,8 @@ export interface PendingChange {
   itemType: "FILE" | "FOLDER";
   path: string;
   content?: string;
+  metadata?: {
+    tags?: string[];
+    title?: string;
+  };
 }
